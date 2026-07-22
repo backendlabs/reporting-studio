@@ -4,7 +4,13 @@ import { useState, useRef, useEffect } from "react";
 import { Download, FileSpreadsheet, FileText, ChevronDown } from "lucide-react";
 import type { DashboardData } from "@/lib/mock-data";
 
-export default function ExportMenu({ data }: { data: DashboardData }) {
+export default function ExportMenu({
+  data,
+  disabled,
+}: {
+  data: DashboardData;
+  disabled?: boolean;
+}) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -103,7 +109,8 @@ export default function ExportMenu({ data }: { data: DashboardData }) {
     <div className="relative no-print" ref={ref}>
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-1.5 rounded-full border border-line bg-card px-3.5 py-2 text-xs font-semibold text-ink hover:border-brand hover:text-brand-deep"
+        disabled={disabled}
+        className="flex items-center gap-1.5 rounded-full border border-line bg-card px-3.5 py-2 text-xs font-semibold text-ink hover:border-brand hover:text-brand-deep disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:border-line disabled:hover:text-ink"
       >
         <Download className="h-3.5 w-3.5" strokeWidth={2} />
         Export

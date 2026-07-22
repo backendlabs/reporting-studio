@@ -15,6 +15,12 @@ import ChannelsBar from "@/components/ChannelsBar";
 import IndexingPanel from "@/components/IndexingPanel";
 import NotesPanel from "@/components/NotesPanel";
 import ExportMenu from "@/components/ExportMenu";
+import {
+  MetricCardSkeleton,
+  ChartSkeleton,
+  TableSkeleton,
+  BarListSkeleton,
+} from "@/components/Skeleton";
 import { LogOut, CircleDot } from "lucide-react";
 
 type Tab = "analytics" | "search" | "indexing" | "notes";
@@ -90,7 +96,7 @@ export default function DashboardPage() {
             />
             {loading ? "Checking..." : source === "live" ? "Live data" : "Sample data"}
           </span>
-          <ExportMenu data={data} />
+          <ExportMenu data={data} disabled={loading} />
           <button
             onClick={() => {
               lockSession();
@@ -136,56 +142,100 @@ export default function DashboardPage() {
 
       {tab === "analytics" && (
         <div className="space-y-6">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            {gaMetrics.map((m) => (
-              <MetricCard
-                key={m.label}
-                label={m.label}
-                value={m.value}
-                previousValue={m.previousValue}
-              />
-            ))}
-          </div>
-          <TrendChart data={data.series} compareLabel={data.compareLabel} />
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <PageTable rows={data.topPages} title="Top Pages" />
-            <ChannelsBar rows={data.channels} />
-          </div>
+          {loading ? (
+            <>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <MetricCardSkeleton />
+                <MetricCardSkeleton />
+                <MetricCardSkeleton />
+              </div>
+              <ChartSkeleton />
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <TableSkeleton />
+                <BarListSkeleton />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                {gaMetrics.map((m) => (
+                  <MetricCard
+                    key={m.label}
+                    label={m.label}
+                    value={m.value}
+                    previousValue={m.previousValue}
+                  />
+                ))}
+              </div>
+              <TrendChart data={data.series} compareLabel={data.compareLabel} />
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <PageTable rows={data.topPages} title="Top Pages" />
+                <ChannelsBar rows={data.channels} />
+              </div>
+            </>
+          )}
         </div>
       )}
 
       {tab === "search" && (
         <div className="space-y-6">
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-            {gscMetrics.map((m) => (
-              <MetricCard
-                key={m.label}
-                label={m.label}
-                value={m.value}
-                previousValue={m.previousValue}
-              />
-            ))}
-          </div>
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            <QueryTable rows={data.topQueries} />
-            <PageTable rows={data.topPages} title="Top Pages by Clicks" />
-          </div>
+          {loading ? (
+            <>
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                <MetricCardSkeleton />
+                <MetricCardSkeleton />
+              </div>
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <TableSkeleton />
+                <TableSkeleton />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+                {gscMetrics.map((m) => (
+                  <MetricCard
+                    key={m.label}
+                    label={m.label}
+                    value={m.value}
+                    previousValue={m.previousValue}
+                  />
+                ))}
+              </div>
+              <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+                <QueryTable rows={data.topQueries} />
+                <PageTable rows={data.topPages} title="Top Pages by Clicks" />
+              </div>
+            </>
+          )}
         </div>
       )}
 
-      {tab === "indexing" && (
-        <IndexingPanel
-          sitemaps={data.sitemaps}
-          topPages={data.topPages}
-          topQueries={data.topQueries}
-          liveInspection={source === "live"}
-        />
-      )}
+      {tab === "indexing" &&
+        (loading ? (
+          <div className="space-y-6">
+            <div className="grid grid-cols-2 gap-4">
+              <MetricCardSkeleton />
+              <MetricCardSkeleton />
+            </div>
+            <TableSkeleton />
+            <TableSkeleton />
+          </div>
+        ) : (
+          <IndexingPanel
+            sitemaps={data.sitemaps}
+            topPages={data.topPages}
+            topQueries={data.topQueries}
+            liveInspection={source === "live"}
+          />
+        ))}
 
       {tab === "notes" && <NotesPanel />}
 
       <footer className="mt-10 border-t border-line pt-5 text-center text-[11px] text-ink-soft no-print">
-        {source === "live"
+        {loading
+          ? "Loading…"
+          : source === "live"
           ? "Live data from Google Analytics and Search Console."
           : "Sample data shown — connect Google Analytics and Search Console to see real numbers."}
       </footer>

@@ -23,21 +23,16 @@ const FIELDS = [
 type NotesState = Record<(typeof FIELDS)[number]["key"], string>;
 
 const DEFAULT_NOTES: NotesState = {
-  completed:
-    "Published 3 new blog posts targeting non-branded keywords, fixed 9 broken internal links flagged by the crawl audit, and rewrote meta descriptions on the top 10 landing pages by impressions.",
-  planned:
-    "Kick off a local citation cleanup pass, start outreach for 3 relevant guest post placements, and test a shorter form on the /contact page to lift completion rate.",
-  summary:
-    "Organic sessions are up this period and search impressions are trending well ahead of last year. Form completions still lag slightly — the shorter contact form test next month should help.",
+  completed: "",
+  planned: "",
+  summary: "",
 };
 
 export default function NotesPanel() {
   const [notes, setNotes] = useState<NotesState>(DEFAULT_NOTES);
-  const [saved, setSaved] = useState(true);
 
   function update(key: keyof NotesState, value: string) {
     setNotes((n) => ({ ...n, [key]: value }));
-    setSaved(false);
   }
 
   return (
@@ -62,13 +57,13 @@ export default function NotesPanel() {
 
       <div className="flex items-center justify-between">
         <p className="text-xs text-ink-soft">
-          {saved
-            ? "Autosaves to Supabase as you type."
-            : "Unsaved changes — sample data isn't persisted."}
+          Not saved anywhere yet — notes reset on refresh until this is
+          connected to a database.
         </p>
         <button
-          onClick={() => setSaved(true)}
-          className="rounded-full bg-brand px-4 py-2 text-xs font-semibold text-white hover:bg-brand-deep"
+          disabled
+          title="Not wired up yet — notes aren't persisted"
+          className="cursor-not-allowed rounded-full bg-brand/40 px-4 py-2 text-xs font-semibold text-white"
         >
           Save Notes
         </button>
