@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { SAMPLE_CLIENT, unlockSession } from "@/lib/auth";
 import { Lock } from "lucide-react";
 
@@ -24,8 +25,14 @@ export default function LoginPage() {
     <main className="flex min-h-full items-center justify-center px-6 py-16">
       <div className="w-full max-w-sm">
         <div className="mb-8 flex flex-col items-center text-center">
-          <div className="mb-5 flex h-11 w-11 items-center justify-center rounded-full bg-brand text-white">
-            <span className="font-display text-lg italic">R</span>
+          <div className="mb-5 h-14 w-14 overflow-hidden rounded-full">
+            <Image
+              src="/logo.png"
+              alt={`${SAMPLE_CLIENT.name} logo`}
+              width={56}
+              height={56}
+              className="h-full w-full object-cover"
+            />
           </div>
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-ink-soft">
             Reporting Studio
@@ -65,14 +72,10 @@ export default function LoginPage() {
           >
             View Report
           </button>
-          <p className="mt-4 text-center text-[11px] leading-relaxed text-ink-soft">
-            Password: <span className="tabular font-semibold">harbor2026</span>
-          </p>
         </form>
 
         <p className="mt-6 text-center text-xs text-ink-soft">
-          Each client gets their own unique link and password. Shown here
-          with sample data — connect a real client on deploy.
+          Each client gets their own unique link and password.
         </p>
       </div>
     </main>

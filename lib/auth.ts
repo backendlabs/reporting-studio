@@ -5,9 +5,11 @@
 // route ever renders, with the session stored in an httpOnly cookie.
 
 export const SAMPLE_CLIENT = {
-  name: "Harbor & Co.",
-  slug: "harbor-co",
-  password: "harbor2026",
+  name: "Pinnacle Pursuit SEO",
+  slug: "pinnacle-pursuit-seo",
+  // Change this before sharing the link with Dillon — this is just a
+  // placeholder. Update it here, then redeploy.
+  password: "Pinnacle-2026",
 };
 
 const SESSION_KEY = "dashboard_unlocked";

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { isUnlocked, lockSession, SAMPLE_CLIENT } from "@/lib/auth";
 import type { RangeKey } from "@/lib/mock-data";
 import { useDashboardData } from "@/lib/use-dashboard-data";
@@ -61,8 +62,14 @@ export default function DashboardPage() {
     <main className="mx-auto max-w-5xl px-6 py-10">
       <header className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand text-white">
-            <span className="font-display text-base italic">R</span>
+          <div className="h-10 w-10 overflow-hidden rounded-full">
+            <Image
+              src="/logo.png"
+              alt={`${SAMPLE_CLIENT.name} logo`}
+              width={40}
+              height={40}
+              className="h-full w-full object-cover"
+            />
           </div>
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-soft">
