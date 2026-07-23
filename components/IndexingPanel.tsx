@@ -56,10 +56,16 @@ export default function IndexingPanel({
 
   return (
     <div className="space-y-6">
+      <div className="rounded-lg border border-line bg-brand-tint px-4 py-2.5 text-xs text-brand-deep">
+        These two numbers come from your submitted sitemap, not Google&apos;s
+        full index coverage report — Google doesn&apos;t expose that in bulk
+        via API. Treat them as directional, and use the per-URL check below
+        for anything you need to confirm.
+      </div>
       <div className="grid grid-cols-2 gap-4">
         <div className="rounded-2xl border border-line bg-card p-5">
           <p className="text-xs font-semibold uppercase tracking-wide text-ink-soft">
-            Pages Submitted
+            Submitted (Sitemap)
           </p>
           <p className="mt-2 font-display text-3xl tabular text-ink">
             {totalSubmitted.toLocaleString("en-US")}
@@ -67,7 +73,7 @@ export default function IndexingPanel({
         </div>
         <div className="rounded-2xl border border-line bg-card p-5">
           <p className="text-xs font-semibold uppercase tracking-wide text-ink-soft">
-            Pages Indexed
+            Indexed (per Sitemap Report)
           </p>
           <p className="mt-2 font-display text-3xl tabular text-ink">
             {totalIndexed.toLocaleString("en-US")}

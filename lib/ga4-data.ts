@@ -16,6 +16,7 @@ export interface GA4TopPage {
   path: string;
   pageviews: number;
   sessions: number;
+  engagementRate: number; // percent
 }
 
 export interface GA4Channel {
@@ -76,7 +77,11 @@ export async function getGA4TopPages(
     property: propertyName(),
     dateRanges: [window],
     dimensions: [{ name: "pagePath" }],
-    metrics: [{ name: "screenPageViews" }, { name: "sessions" }],
+    metrics: [
+      { name: "screenPageViews" },
+      { name: "sessions" },
+      { name: "engagementRate" },
+    ],
     orderBys: [
       { metric: { metricName: "screenPageViews" }, desc: true },
     ],
@@ -86,6 +91,8 @@ export async function getGA4TopPages(
     path: row.dimensionValues?.[0]?.value ?? "",
     pageviews: Number(row.metricValues?.[0]?.value ?? 0),
     sessions: Number(row.metricValues?.[1]?.value ?? 0),
+    engagementRate:
+      Math.round(Number(row.metricValues?.[2]?.value ?? 0) * 1000) / 10,
   }));
 }
 

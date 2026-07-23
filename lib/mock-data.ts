@@ -66,6 +66,13 @@ export interface PageRow {
   position: number;
 }
 
+export interface GA4PageRow {
+  path: string;
+  sessions: number;
+  pageviews: number;
+  engagementRate: number;
+}
+
 export interface ChannelRow {
   channel: string;
   sessions: number;
@@ -85,7 +92,8 @@ export interface DashboardData {
   metrics: MetricSummary[];
   series: SeriesPoint[];
   topQueries: QueryRow[];
-  topPages: PageRow[];
+  topSearchPages: PageRow[];
+  topAnalyticsPages: GA4PageRow[];
   channels: ChannelRow[];
   sitemaps: SitemapRow[];
 }
@@ -155,12 +163,17 @@ export function getDashboardData(
   const totalPrevSessions = series.reduce((a, p) => a + p.prevSessions, 0);
   const pageviews = Math.round(totalSessions * (2.1 + rand() * 0.4));
   const prevPageviews = Math.round(totalPrevSessions * (2.0 + rand() * 0.4));
-  const formCompletions = Math.round(totalSessions * 0.021);
-  const prevFormCompletions = Math.round(totalPrevSessions * 0.017);
+  const conversions = Math.round(totalSessions * 0.021);
+  const prevConversions = Math.round(totalPrevSessions * 0.017);
   const impressions = Math.round(totalSessions * 46 + rand() * 4000);
   const prevImpressions = Math.round(totalPrevSessions * 41 + rand() * 4000);
+  const clicks = Math.round(impressions * (0.02 + rand() * 0.015));
+  const prevClicks = Math.round(prevImpressions * (0.018 + rand() * 0.015));
   const avgPosition = 9.4 - rand() * 1.8;
   const prevAvgPosition = avgPosition + (rand() - 0.3) * 1.5;
+  const ctr = Math.round((clicks / Math.max(1, impressions)) * 1000) / 10;
+  const prevCtr =
+    Math.round((prevClicks / Math.max(1, prevImpressions)) * 1000) / 10;
 
   const metrics: MetricSummary[] = [
     {
@@ -176,9 +189,15 @@ export function getDashboardData(
       format: "number",
     },
     {
-      label: "Form Completions",
-      value: formCompletions,
-      previousValue: prevFormCompletions,
+      label: "Conversions",
+      value: conversions,
+      previousValue: prevConversions,
+      format: "number",
+    },
+    {
+      label: "Search Clicks",
+      value: clicks,
+      previousValue: prevClicks,
       format: "number",
     },
     {
@@ -192,6 +211,12 @@ export function getDashboardData(
       value: Math.round(avgPosition * 10) / 10,
       previousValue: Math.round(prevAvgPosition * 10) / 10,
       format: "number",
+    },
+    {
+      label: "Search CTR",
+      value: ctr,
+      previousValue: prevCtr,
+      format: "percent",
     },
   ];
 
@@ -207,7 +232,7 @@ export function getDashboardData(
     };
   }).sort((a, b) => b.impressions - a.impressions);
 
-  const topPages: PageRow[] = SAMPLE_PAGES.map((p, i) => {
+  const topSearchPages: PageRow[] = SAMPLE_PAGES.map((p, i) => {
     const impr = Math.round(300 + rand() * 4200 - i * 150);
     const clicks = Math.max(0, Math.round(impr * (0.015 + rand() * 0.05)));
     return {
@@ -218,6 +243,17 @@ export function getDashboardData(
       position: Math.round((2 + rand() * 12) * 10) / 10,
     };
   }).sort((a, b) => b.clicks - a.clicks);
+
+  const topAnalyticsPages: GA4PageRow[] = SAMPLE_PAGES.map((p) => {
+    const pageviews = Math.round(80 + rand() * 900);
+    const sessions = Math.round(pageviews * (0.55 + rand() * 0.3));
+    return {
+      path: p,
+      sessions,
+      pageviews,
+      engagementRate: Math.round((45 + rand() * 40) * 10) / 10,
+    };
+  }).sort((a, b) => b.sessions - a.sessions);
 
   const channels: ChannelRow[] = SAMPLE_CHANNELS.map((c) => ({
     channel: c,
@@ -242,7 +278,8 @@ export function getDashboardData(
     metrics,
     series,
     topQueries,
-    topPages,
+    topSearchPages,
+    topAnalyticsPages,
     channels,
     sitemaps,
   };

@@ -30,14 +30,14 @@ interface LiveApiResponse {
     previous: LiveApiSummary;
     series: { date: string; sessions: number }[];
     prevSeries: { date: string; sessions: number }[];
-    topPages: DashboardData["topPages"];
+    topPages: DashboardData["topAnalyticsPages"];
     channels: DashboardData["channels"];
   };
   gsc?: {
     current: LiveApiGscSummary;
     previous: LiveApiGscSummary;
     topQueries: DashboardData["topQueries"];
-    topPages: DashboardData["topPages"];
+    topPages: DashboardData["topSearchPages"];
   };
   indexing?: { path: string; submitted: number; indexed: number; type: string }[];
 }
@@ -89,10 +89,22 @@ function mapLiveResponse(
         format: "number",
       },
       {
+        label: "Search Impressions",
+        value: gsc.current.impressions,
+        previousValue: gsc.previous.impressions,
+        format: "number",
+      },
+      {
         label: "Avg. Search Position",
         value: gsc.current.position,
         previousValue: gsc.previous.position,
         format: "number",
+      },
+      {
+        label: "Search CTR",
+        value: gsc.current.ctr,
+        previousValue: gsc.previous.ctr,
+        format: "percent",
       },
     ],
     series: ga4.series.map((p, i) => ({
@@ -101,7 +113,8 @@ function mapLiveResponse(
       prevSessions: ga4.prevSeries?.[i]?.sessions ?? 0,
     })),
     topQueries: gsc.topQueries,
-    topPages: gsc.topPages,
+    topSearchPages: gsc.topPages,
+    topAnalyticsPages: ga4.topPages,
     channels: ga4.channels,
     sitemaps: (json.indexing ?? []).map((s) => ({
       path: s.path,

@@ -11,6 +11,7 @@ import MetricCard from "@/components/MetricCard";
 import TrendChart from "@/components/TrendChart";
 import QueryTable from "@/components/QueryTable";
 import PageTable from "@/components/PageTable";
+import AnalyticsPageTable from "@/components/AnalyticsPageTable";
 import ChannelsBar from "@/components/ChannelsBar";
 import IndexingPanel from "@/components/IndexingPanel";
 import NotesPanel from "@/components/NotesPanel";
@@ -57,7 +58,12 @@ export default function DashboardPage() {
   const gscMetrics = useMemo(
     () =>
       data.metrics.filter((m) =>
-        ["Search Clicks", "Avg. Search Position"].includes(m.label)
+        [
+          "Search Clicks",
+          "Search Impressions",
+          "Avg. Search Position",
+          "Search CTR",
+        ].includes(m.label)
       ),
     [data.metrics]
   );
@@ -164,12 +170,13 @@ export default function DashboardPage() {
                     label={m.label}
                     value={m.value}
                     previousValue={m.previousValue}
+                    suffix={m.format === "percent" ? "%" : undefined}
                   />
                 ))}
               </div>
               <TrendChart data={data.series} compareLabel={data.compareLabel} />
               <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                <PageTable rows={data.topPages} title="Top Pages" />
+                <AnalyticsPageTable rows={data.topAnalyticsPages} />
                 <ChannelsBar rows={data.channels} />
               </div>
             </>
@@ -199,12 +206,13 @@ export default function DashboardPage() {
                     label={m.label}
                     value={m.value}
                     previousValue={m.previousValue}
+                    suffix={m.format === "percent" ? "%" : undefined}
                   />
                 ))}
               </div>
               <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <QueryTable rows={data.topQueries} />
-                <PageTable rows={data.topPages} title="Top Pages by Clicks" />
+                <PageTable rows={data.topSearchPages} title="Top Pages by Clicks" />
               </div>
             </>
           )}
@@ -224,7 +232,7 @@ export default function DashboardPage() {
         ) : (
           <IndexingPanel
             sitemaps={data.sitemaps}
-            topPages={data.topPages}
+            topPages={data.topSearchPages}
             topQueries={data.topQueries}
             liveInspection={source === "live"}
           />
